@@ -1,0 +1,10 @@
+address_formats:
+  - "{postcode} {city}, {streetName} {buildingNumber}"
+  - "{city}, {streetName} {buildingNumber}"
+  - "{address}"
+placeholders:
+  postcode: '{postcode}'
+  city: '{city}'
+  streetName: '{streetName}'
+  buildingNumber: '{buildingNumber}'
+  address: '{address}'
