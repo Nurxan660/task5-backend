@@ -18,7 +18,7 @@ class CustomAddressProvider extends Base
 
     private function loadConfiguration(): void
     {
-        $config = Yaml::parse(file_get_contents('C:/Users/nurxa/PhpstormProjects/task5/config/address_formats.yaml'));
+        $config = Yaml::parse(file_get_contents(__DIR__ . '/../../config/address_formats.yaml'));
         $this->formats = $config['address_formats'] ?? [];
         $this->placeholders = $config['placeholders'] ?? [];
     }
