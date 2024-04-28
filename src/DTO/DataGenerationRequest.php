@@ -10,6 +10,7 @@ class DataGenerationRequest
     private int $seed;
     private int $page;
     private int $size;
+    private int $error;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -18,6 +19,7 @@ class DataGenerationRequest
         $this->seed = $query->get('seed');
         $this->page = $query->get('page');
         $this->size = $query->get('size');
+        $this->error = $query->get('error');
     }
 
     public function getRegion(): string
@@ -39,6 +41,13 @@ class DataGenerationRequest
     {
         return $this->size;
     }
+
+    public function getError(): int
+    {
+        return $this->error;
+    }
+
+
 
 
 }

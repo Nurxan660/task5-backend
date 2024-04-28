@@ -25,8 +25,7 @@ class DataGenerationController extends AbstractController
     public function generate(): JsonResponse
     {
         $req = new DataGenerationRequest($this->requestStack);
-        $this->dataGeneratorService = new DataGenerationService($req);
-        $data = $this->dataGeneratorService->generateData($req->getPage(), $req->getSize());
+        $data = $this->dataGeneratorService->generateData($req->getPage(), $req->getSize(), $req->getError());
         return new JsonResponse($data);
     }
 

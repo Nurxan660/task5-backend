@@ -3,38 +3,42 @@
 namespace App\Service;
 
 use App\DTO\DataGenerationRequest;
-use App\Provider\CustomAddressProvider;
+use App\Service\Builder\DataRecordBuilder;
 use Faker\Factory;
 use Faker\Generator;
 
 class DataGenerationService
 {
     private Generator $faker;
-    private CustomAddressProvider $customProvider;
+    private ErrorGenerationService $errService;
+    private DataRecordBuilder $dataRecordBuilder;
+    private AlphabetGeneratorService $alphabetGeneratorService;
 
-    public function __construct(DataGenerationRequest $dataRequest)
+    public function __construct(DataGenerationRequest $dataRequest,
+                                ErrorGenerationService $errGenerationService,
+                                AlphabetGeneratorService $alphabetGeneratorService)
     {
         $this->faker = Factory::create($dataRequest->getRegion());
         $this->faker->seed($dataRequest->getSeed());
-        $this->customProvider = new CustomAddressProvider($this->faker);
+        $this->errService = $errGenerationService;
+        $this->dataRecordBuilder = new DataRecordBuilder($this->faker);
+        $this->alphabetGeneratorService = $alphabetGeneratorService;
     }
 
-    public function generateData(int $page, int $size): array
+    public function generateData(int $page, int $size, float $errRate): array
     {
-        $data = [];
-        for ($i = 1; $i <= $size; $i++) {
-            $data[] = $this->generateSingleRecord($page, $size, $i);
-        }
-        return $data;
+        $alphabets = $this->alphabetGeneratorService->prepareAlphabets($this->faker);
+        return array_map(function ($index) use ($page, $size, $errRate, $alphabets) {
+            $record = $this->generateSingleRecord($page, $size, $index);
+            return $errRate > 0 ? $this->errService->applyErrorsToFields($record, $errRate, $alphabets) : $record;
+        }, range(1, $size));
     }
 
     private function generateSingleRecord(int $page, int $size, int $index): array
     {
-        return [
-            'Number' => ($page - 1) * $size + $index, 'UUID' => $this->faker->uuid(),
-            'Name' => $this->faker->name(), 'Phone' => $this->faker->phoneNumber(),
-            'Address' => $this->customProvider->getCustomAddress()
-        ];
+        return $this->dataRecordBuilder
+            ->setPageDetails($page, $size, $index)->setUUID()
+            ->setName()->setPhone()->setAddress()
+            ->build();
     }
-
 }
