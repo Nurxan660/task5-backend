@@ -30,7 +30,7 @@ class DataGenerationService
         $alphabets = $this->alphabetGeneratorService->prepareAlphabets($this->faker);
         return array_map(function ($index) use ($page, $size, $errRate, $alphabets) {
             $record = $this->generateSingleRecord($page, $size, $index);
-            return $errRate > 0 ? $this->errService->applyErrorsToFields($record, $errRate, $alphabets) : $record;
+            return  $this->errService->applyErrorsToFields($record, $errRate, $alphabets);
         }, range(1, $size));
     }
 
