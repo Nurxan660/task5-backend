@@ -50,7 +50,7 @@ class DataGenerationRequest
         return $this->size;
     }
 
-    public function getError(): int
+    public function getError(): float
     {
         return $this->error;
     }
