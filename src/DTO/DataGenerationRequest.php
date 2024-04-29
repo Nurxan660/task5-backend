@@ -3,14 +3,22 @@
 namespace App\DTO;
 
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class DataGenerationRequest
 {
-    private string $region;
-    private int $seed;
-    private int $page;
-    private int $size;
-    private int $error;
+    #[Assert\NotBlank]
+    private ?string $region;
+    #[Assert\NotBlank]
+    private ?int $seed;
+    #[Assert\NotBlank]
+    private ?int $page;
+    #[Assert\NotBlank]
+    #[Assert\LessThanOrEqual(value: 20)]
+    private ?int $size;
+    #[Assert\NotBlank]
+    #[Assert\Range(min: 0, max: 1000)]
+    private ?float $error;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -46,8 +54,4 @@ class DataGenerationRequest
     {
         return $this->error;
     }
-
-
-
-
 }
